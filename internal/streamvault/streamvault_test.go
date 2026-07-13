@@ -96,7 +96,7 @@ func TestSign(t *testing.T) {
 	secret, ts, body := "topsecret", int64(1752399000), []byte(`{"event":"video.archived"}`)
 
 	m := hmac.New(sha256.New, []byte(secret))
-	m.Write([]byte(fmt.Sprintf("%d.", ts)))
+	_, _ = fmt.Fprintf(m, "%d.", ts)
 	m.Write(body)
 	want := hex.EncodeToString(m.Sum(nil))
 

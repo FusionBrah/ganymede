@@ -8,7 +8,8 @@ on:
 
 env:
   TESTCONTAINER_DOCKER_NETWORK: ganymede-tests
-  SKIP_SECRET_TESTS: false
+  # Fork: no Twitch API secrets, so skip integration tests that need them.
+  SKIP_SECRET_TESTS: true
 
 jobs:
   test:

@@ -189,7 +189,7 @@ func BuildPayload(event, delivery string, ts time.Time, cfg Config, ch *ent.Chan
 // The timestamp is bound into the signature so replays can be rejected.
 func Sign(secret string, ts int64, body []byte) string {
 	mac := hmac.New(sha256.New, []byte(secret))
-	fmt.Fprintf(mac, "%d.", ts)
+	_, _ = fmt.Fprintf(mac, "%d.", ts)
 	mac.Write(body)
 	return hex.EncodeToString(mac.Sum(nil))
 }
