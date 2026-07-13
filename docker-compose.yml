@@ -40,6 +40,9 @@ services:
       - FORCE_SSO_AUTH=false
       - REQUIRE_LOGIN=false
       # - CDN_URL= # Set this if you are hosting static files through another service (nginx, S3, etc). By default this does not need to be configured as Ganymede serves the static files.
+      # StreamVault webhook (fork-specific, see DEPLOYMENT.md). No-op until BOTH are set.
+      - STREAMVAULT_WEBHOOK_URL=https://streamvault.gg/api/webhooks/ganymede
+      - STREAMVAULT_WEBHOOK_SECRET= # long random secret; identical value on the website
     volumes:
       - /path/to/vod/storage:/data/videos # update VIDEOS_DIR env var
       - ./temp:/data/temp # update TEMP_DIR env var

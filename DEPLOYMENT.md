@@ -68,14 +68,16 @@ Minimum required edits:
 - Volume `/path/to/vod/storage:/data/videos` → your real storage path
 - Ports (default maps the app to `4800`, Postgres to `4801`)
 
-Add the StreamVault webhook variables to the app service's `environment:` list
-(they are **not** in the stock file):
+The StreamVault webhook variables are already in the app service's
+`environment:` list — fill them in:
 
 ```yaml
       - STREAMVAULT_WEBHOOK_URL=https://streamvault.gg/api/webhooks/ganymede
       - STREAMVAULT_WEBHOOK_SECRET=<long-random-secret>   # identical value on the website
-      - CDN_URL=https://cdn.streamvault.gg                # only if using B2/CDN
 ```
+
+Also uncomment and set `CDN_URL=https://cdn.streamvault.gg` if serving media
+from B2/CDN.
 
 The webhook is a **no-op until both `STREAMVAULT_WEBHOOK_URL` and
 `STREAMVAULT_WEBHOOK_SECRET` are set** (fail-closed), so it is safe to deploy
