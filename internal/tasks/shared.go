@@ -25,6 +25,7 @@ import (
 	"github.com/zibbp/ganymede/internal/database"
 	"github.com/zibbp/ganymede/internal/notification"
 	"github.com/zibbp/ganymede/internal/platform"
+	"github.com/zibbp/ganymede/internal/streamvault"
 
 	tasks_shared "github.com/zibbp/ganymede/internal/tasks/shared"
 	"github.com/zibbp/ganymede/internal/utils"
@@ -206,6 +207,9 @@ func checkIfTasksAreDone(ctx context.Context, entClient *ent.Client, input Archi
 				}()
 			}
 
+			// StreamVault: emit signed archive-complete webhook (isolated; see internal/streamvault).
+			streamvault.Notify(ctx, streamvault.EventLiveArchived, &dbItems.Channel, &dbItems.Video, &dbItems.Queue)
+
 			// Queue task to calculate video storage usage
 			_, err = river.ClientFromContext[pgx.Tx](ctx).Insert(ctx, &UpdateVideoStorageUsage{
 				VideoID: &dbItems.Video.ID,
@@ -239,6 +243,9 @@ func checkIfTasksAreDone(ctx context.Context, entClient *ent.Client, input Archi
 					notifSvc.SendVideoArchiveSuccess(notifCtx, &dbItems.Channel, &dbItems.Video, &dbItems.Queue)
 				}()
 			}
+
+			// StreamVault: emit signed archive-complete webhook (isolated; see internal/streamvault).
+			streamvault.Notify(ctx, streamvault.EventVideoArchived, &dbItems.Channel, &dbItems.Video, &dbItems.Queue)
 
 			// Queue task to calculate video storage usage
 			_, err = river.ClientFromContext[pgx.Tx](ctx).Insert(ctx, &UpdateVideoStorageUsage{
