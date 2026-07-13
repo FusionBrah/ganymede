@@ -1,7 +1,7 @@
 services:
   ganymede:
     container_name: ganymede
-    image: ghcr.io/zibbp/ganymede:latest
+    image: ghcr.io/fusionbrah/ganymede:dev # StreamVault fork image, published by CI (see DEPLOYMENT.md)
     restart: unless-stopped
     depends_on:
       - ganymede-db
