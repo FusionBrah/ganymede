@@ -1,0 +1,27 @@
+# StreamVault backend — Backblaze B2 sync
+# Install:  crontab scripts/crontab.example
+# Or add the lines below to an existing crontab:  crontab -e
+
+VIDEOS_DIR=/data/videos
+B2_BUCKET=backblaze:streamvault/data/videos
+LOG_DIR=/var/log/streamvault
+
+# Ganymede DB. Defaults target the docker-compose 'ganymede-db' container via
+# `docker exec`. For a direct psql connection instead, set DB_HOST and DB_PASS:
+# DB_HOST=localhost
+# DB_PASS=your_password
+DB_CONTAINER=ganymede-db
+DB_USER=ganymede
+DB_NAME=ganymede-prd
+
+# Sync completed VODs (processing=false) to B2 every 15 minutes.
+*/15 * * * * /opt/streamvault/scripts/sync-to-b2.sh
+
+# Prune old sync logs monthly.
+0 0 1 * * find /var/log/streamvault -name "*.log" -mtime +30 -delete
+
+# NOTE: local file cleanup is handled by Ganymede's per-channel retention
+#       (Admin > Channels > Edit > Retention). Set retention days LONGER than
+#       the sync interval so files reach B2 before deletion.
+# NOTE: VOD metadata reaches the dashboard via the archive.complete webhook
+#       (internal/streamvault), NOT this cron.
